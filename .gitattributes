@@ -1,0 +1,15 @@
+# Finales de línea normalizados (el repo se usa desde Windows y WSL)
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Modelos 3D y binarios
+*.obj -text -diff
+*.glb binary
+*.gltf -diff
+*.blend binary
+*.png binary
+*.jpg binary
+*.apk binary
+*.aab binary

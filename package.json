@@ -1,0 +1,35 @@
+{
+  "name": "ujap-emulador-brazo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Emulador programable de brazo robótico (App 2): web + Android. Tesis de Especialización en Automatización Industrial, UJAP.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "npm@11.19.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @emulador/emulator",
+    "build": "npm run build -w @emulador/emulator",
+    "preview": "npm run preview -w @emulador/emulator",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "prettier": "^3.9.9",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.69.0",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
+  }
+}

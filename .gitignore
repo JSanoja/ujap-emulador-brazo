@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Android (generado por Capacitor): se versiona la carpeta android/,
+# pero no los artefactos de compilación ni las credenciales de firma.
+apps/emulator/android/app/build/
+apps/emulator/android/.gradle/
+apps/emulator/android/local.properties
+*.keystore
+*.jks

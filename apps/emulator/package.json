@@ -1,0 +1,26 @@
+{
+  "name": "@emulador/emulator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Emulador 3D (Babylon.js) para web y Android (Capacitor).",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json",
+    "android:sync": "vite build && cap sync android",
+    "android:open": "cap open android"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^9.27.1",
+    "@babylonjs/loaders": "^9.27.1",
+    "@capacitor/core": "^8.5.2",
+    "@emulador/core": "*"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2"
+  }
+}
