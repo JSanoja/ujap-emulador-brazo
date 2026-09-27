@@ -22,6 +22,7 @@ Contexto en `..\docs\` (leer al empezar):
 - **Git y GitHub solo manual (normativa):** Claude no ejecuta `git commit`, `git push`, `git tag`, `gh` ni ninguna otra operación que escriba en el repositorio o en GitHub. Cuando haga falta, entrega los comandos listos para que Juan los ejecute.
 - **Línea de comandos: WSL (Ubuntu).** Todos los comandos que se le pasen a Juan son de Linux (bash), con rutas `/mnt/d/AI - FOLDER/Tesis UJAP/...` entre comillas. Node (nvm), `gh` y Git se usan desde WSL.
 - Idioma: español en comentarios, commits, mensajes de la interfaz y de error.
+- **Identificadores en inglés:** variables, constantes, funciones, métodos, clases, interfaces, tipos y nombres de archivo del código se escriben en inglés (`percentToDegrees`, `JointConfig`, `txt-format.ts`). Los textos que ve el usuario y los comentarios siguen en español.
 - Rama por workunit (`n1-nucleo`, `c1-spike`, `c2-modelos`, …); commits pequeños; merge a `main` con `npm run check` en verde. Etiquetar hitos (`v0.1-esqueleto`, …).
 - Antes de cada cambio visual grande, capturas en `..\docs\capturas\` (prefijo `app2-`), para el Cap. IV.
 - **`node_modules` se instala desde WSL**, que es donde se ejecuta; esbuild/rolldown tienen binarios por plataforma. Si alguna vez se instala desde Windows, borrar `node_modules` y reinstalar desde WSL.
