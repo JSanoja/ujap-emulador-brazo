@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   degreesToPercent,
   gripperOpening,
+  gripperOpeningToPercent,
   percentToDegrees,
   speedToDegreesPerSecond,
 } from './conversion';
@@ -38,8 +39,8 @@ describe('percentToDegrees', () => {
 });
 
 describe('gripperOpening (caso 6 de la spec)', () => {
-  const normal = { maxOpening: 50, inverted: false };
-  const inverted = { maxOpening: 50, inverted: true };
+  const normal = { maxOpening: 50, maxSpeed: 50, inverted: false };
+  const inverted = { maxOpening: 50, maxSpeed: 50, inverted: true };
 
   it('normal: 0 % abierta, 100 % cerrada', () => {
     expect(gripperOpening(normal, 0)).toBe(50);
@@ -49,6 +50,16 @@ describe('gripperOpening (caso 6 de la spec)', () => {
   it('invertida: 0 % cerrada, 100 % abierta', () => {
     expect(gripperOpening(inverted, 0)).toBe(0);
     expect(gripperOpening(inverted, 100)).toBe(50);
+  });
+
+  it('gripperOpeningToPercent es la inversa en ambos sentidos', () => {
+    for (const gripper of [normal, inverted]) {
+      for (const p of [0, 25, 50, 100]) {
+        expect(gripperOpeningToPercent(gripper, gripperOpening(gripper, p))).toBeCloseTo(p, 9);
+      }
+    }
+    expect(() => gripperOpeningToPercent(normal, 51)).toThrow(RangeError);
+    expect(() => gripperOpeningToPercent(normal, -1)).toThrow(RangeError);
   });
 });
 

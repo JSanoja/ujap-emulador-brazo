@@ -23,6 +23,8 @@ export interface JointConfig {
 export interface GripperConfig {
   /** Apertura máxima entre dedos, en mm. */
   readonly maxOpening: number;
+  /** Velocidad máxima de apertura o cierre en mm/s; corresponde a 100 % de velocidad. */
+  readonly maxSpeed: number;
   /**
    * Opción "Invertir pinza".
    * `false`: 0 % = abierta, 100 % = cerrada (convención por defecto).
@@ -43,7 +45,8 @@ export interface RobotConfig {
  *
  * Rangos y velocidades tomados de la App 1 (robot.config.ts, 2021).
  * ⚠ Provisionales hasta validarlos con el manual del LabVolt 5250 (workunit D0).
- * ⚠ La apertura de la pinza es un valor supuesto hasta medirla en el modelo iRobot (C2).
+ * ⚠ La apertura y la velocidad de la pinza son valores supuestos hasta medirlas en el modelo iRobot (C2)
+ *   y en el manual; con 50 mm y 50 mm/s el recorrido completo tarda 1 s a 100 %.
  */
 export const LABVOLT_5250: RobotConfig = {
   name: 'LabVolt 5250 (emulado)',
@@ -54,7 +57,7 @@ export const LABVOLT_5250: RobotConfig = {
     { id: 'A4', name: 'Muñeca', min: -140, max: 100, maxSpeed: 90 },
     { id: 'A5', name: 'Giro de herramienta', min: -175, max: 175, maxSpeed: 177 },
   ],
-  gripper: { maxOpening: 50, inverted: false },
+  gripper: { maxOpening: 50, maxSpeed: 50, inverted: false },
 };
 
 /**
@@ -88,6 +91,9 @@ export function validateRobotConfig(robot: RobotConfig): string[] {
   }
   if (!(robot.gripper.maxOpening > 0)) {
     errors.push('La apertura máxima de la pinza debe ser mayor que 0.');
+  }
+  if (!(robot.gripper.maxSpeed > 0)) {
+    errors.push('La velocidad máxima de la pinza debe ser mayor que 0.');
   }
   return errors;
 }

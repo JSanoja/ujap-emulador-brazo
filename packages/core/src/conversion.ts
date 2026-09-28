@@ -38,6 +38,17 @@ export function gripperOpening(gripper: GripperConfig, percent: number): number 
   return gripper.maxOpening * (gripper.inverted ? fraction : 1 - fraction);
 }
 
+/** Inversa de `gripperOpening`: porcentaje del TXT para una apertura en mm. */
+export function gripperOpeningToPercent(gripper: GripperConfig, opening: number): number {
+  if (!Number.isFinite(opening) || opening < 0 || opening > gripper.maxOpening) {
+    throw new RangeError(
+      `La apertura de la pinza vale ${opening} mm; debe estar entre 0 y ${gripper.maxOpening} mm.`,
+    );
+  }
+  const fraction = opening / gripper.maxOpening;
+  return (gripper.inverted ? fraction : 1 - fraction) * 100;
+}
+
 /** Velocidad de un eje en °/s para un porcentaje de velocidad (1–100). */
 export function speedToDegreesPerSecond(joint: JointConfig, speedPercent: number): number {
   assertPercent(speedPercent, 'La velocidad', 1);
