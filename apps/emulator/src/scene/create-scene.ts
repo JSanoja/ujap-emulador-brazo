@@ -31,6 +31,8 @@ export interface RobotRig {
   setGripperOpening(millimeters: number): void;
   /** Apertura máxima de la pinza del modelo, en mm. */
   readonly maxGripperOpening: number;
+  /** Punto de agarre, entre las puntas de los dedos. */
+  readonly tool: TransformNode;
 }
 
 interface GripperExtras {
@@ -61,19 +63,19 @@ function articulate(node: TransformNode): (degrees: number) => void {
   };
 }
 
-export async function createScene(engine: Engine): Promise<{ scene: Scene; rig: RobotRig }> {
+export interface RobotScene {
+  readonly scene: Scene;
+  readonly rig: RobotRig;
+  readonly shadows: ShadowGenerator;
+}
+
+export async function createScene(engine: Engine): Promise<RobotScene> {
   const scene = new Scene(engine);
   scene.clearColor = Color4.FromHexString('#1b1d22ff');
 
   // Cámara orbital con vertical fija: más natural en pantallas táctiles que el trackball de la App 1.
-  const camera = new ArcRotateCamera(
-    'camara',
-    -Math.PI / 4,
-    Math.PI / 2.8,
-    1.6,
-    new Vector3(0, 0.3, 0.15),
-    scene,
-  );
+  // De frente al robot (que mira hacia +Z), con las zonas A y B a los lados.
+  const camera = new ArcRotateCamera('camara', 1.25, 1.05, 1.35, new Vector3(0, 0.18, 0.18), scene);
   camera.minZ = 0.01;
   camera.lowerRadiusLimit = 0.4;
   camera.upperRadiusLimit = 5;
@@ -90,10 +92,13 @@ export async function createScene(engine: Engine): Promise<{ scene: Scene; rig: 
   sun.position = new Vector3(1, 2, -1.2);
   sun.intensity = 1.6;
   sun.autoCalcShadowZBounds = true;
+  // Margen del volumen de sombras: sin él, la sombra sobre la mesa se corta en línea recta.
+  sun.shadowOrthoScale = 0.5;
 
-  const ground = MeshBuilder.CreateGround('mesa', { width: 2, height: 2 }, scene);
+  const ground = MeshBuilder.CreateGround('mesa', { width: 1.6, height: 1.2 }, scene);
+  ground.position.z = 0.2;
   const groundMaterial = new StandardMaterial('mesa', scene);
-  groundMaterial.diffuseColor = new Color3(0.22, 0.23, 0.26);
+  groundMaterial.diffuseColor = new Color3(0.2, 0.21, 0.24);
   groundMaterial.specularColor = Color3.Black();
   ground.material = groundMaterial;
   ground.receiveShadows = true;
@@ -124,6 +129,7 @@ export async function createScene(engine: Engine): Promise<{ scene: Scene; rig: 
 
   const rig: RobotRig = {
     maxGripperOpening: gripper.maxOpeningMm,
+    tool: find('Tool'),
     setJointAngle(index, degrees) {
       joints[index]?.(degrees);
     },
@@ -134,5 +140,5 @@ export async function createScene(engine: Engine): Promise<{ scene: Scene; rig: 
     },
   };
 
-  return { scene, rig };
+  return { scene, rig, shadows };
 }

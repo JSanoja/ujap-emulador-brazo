@@ -9,7 +9,7 @@
  * 3. Lleva el brazo a la pose cero (convención de la App 1): brazo vertical, antebrazo
  *    horizontal hacia adelante y pinza alineada con el antebrazo.
  * 4. Alinea el robot: base en el origen, adelante = +Z, arriba = +Y, en metros.
- * 5. Arma la jerarquía A1 › A2 › A3 › A4 › A5 › FingerL/FingerR con cada nodo en su pivote
+ * 5. Arma la jerarquía A1 › A2 › A3 › A4 › A5 › FingerL/FingerR/Tool con cada nodo en su pivote
  *    y sin rotación. La escena solo tiene que girar cada nodo alrededor de `extras.axis`
  *    el ángulo que entrega el núcleo.
  * 6. Calcula normales con ángulo de quiebre y escribe el GLB (sin compresión: Draco y
@@ -300,6 +300,12 @@ async function main(): Promise<void> {
     return Math.hypot(d[0], d[1], d[2]);
   };
   const maxOpening = tipDistance(FINGER_MAX_ANGLE) - tipDistance(0);
+  // Punto de agarre (TCP): entre las puntas de los dedos con la pinza cerrada.
+  const toolPoint: Vec3 = (() => {
+    const l = tipCentroid(finger('FingerL', 0));
+    const r = tipCentroid(finger('FingerR', 0));
+    return [(l[0] + r[0]) / 2, (l[1] + r[1]) / 2, (l[2] + r[2]) / 2];
+  })();
 
   // ---- 5. GLB ----
   const doc = new Document();
@@ -360,6 +366,12 @@ async function main(): Promise<void> {
     else scene.addChild(node);
     nodes.set(rig.name, node);
   }
+  // Nodo sin malla en el punto de agarre, hijo de A5: la escena lo usa para tomar piezas.
+  const tool = doc
+    .createNode('Tool')
+    .setTranslation(sub(toolPoint, finalPivot('A5')) as [number, number, number]);
+  nodes.get('A5')?.addChild(tool);
+
   const gripper = {
     fingerMaxAngle: FINGER_MAX_ANGLE,
     maxOpeningMm: round(maxOpening * 1000, 1),
@@ -384,6 +396,9 @@ async function main(): Promise<void> {
       `  ${n.name.padEnd(8)} pivote ${fmt(finalPivot(n.name))}  eje ${fmt(finalAxis(n.name))}`,
     );
   console.log('Pinza:', gripper);
+  console.log(
+    `  Tool     punto   ${fmt(toolPoint)} (a ${((toolPoint[2] - finalPivot('A5')[2]) * 1000).toFixed(1)} mm de la muñeca)`,
+  );
   console.log(`GLB: ${OUTPUT} (${(statSync(OUTPUT).size / 1e6).toFixed(2)} MB)`);
 }
 

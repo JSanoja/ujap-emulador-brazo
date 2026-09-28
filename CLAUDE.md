@@ -27,7 +27,7 @@ Contexto en `..\docs\` (leer al empezar):
 - Rama por workunit (`n1-nucleo`, `c1-spike`, `c2-modelos`, …); commits pequeños; merge a `main` con `npm run check` en verde. Etiquetar hitos (`v0.1-esqueleto`, …).
 - Antes de cada cambio visual grande, capturas en `..\docs\capturas\` (prefijo `app2-`), para el Cap. IV.
 - **Vite en WSL sobre `/mnt/d`:** no llegan eventos de cambio de archivos; `vite.config.ts` activa el sondeo (`usePolling`) en ese caso. Si el navegador muestra código viejo, reiniciar el servidor.
-- **Capturas y E2E:** `playwright-core` (dependencia de desarrollo) con el Node de Windows y Chrome (`channel: 'chrome'`, `--use-angle=swiftshader`); en desarrollo la escena queda en `window.BABYLON_SCENE`.
+- **E2E y capturas:** `npm run e2e` (compila, sirve con `vite preview` y ejecuta `apps/emulator/e2e/*.e2e.ts` con el Node de Windows y Chrome vía `playwright-core`); `npm run e2e -- --capturas` guarda las imágenes en `../docs/capturas/`. La escena, el emulador y la mesa quedan en `window` en desarrollo o con `?e2e` en la URL. No forma parte de `npm run check` (necesita Chrome).
 - **`node_modules` se instala desde WSL**, que es donde se ejecuta; esbuild/rolldown tienen binarios por plataforma. Si alguna vez se instala desde Windows, borrar `node_modules` y reinstalar desde WSL.
 - Finales de línea LF, controlados por `.gitattributes`.
 - Valores del LabVolt 5250 en `packages/core/src/robot-config.ts` son **provisionales** hasta D0 (manual).
