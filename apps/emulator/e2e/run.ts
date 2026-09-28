@@ -16,7 +16,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const APP = resolve(HERE, '..');
 const PORT = 4180;
 const URL = `http://localhost:${PORT}/?e2e`;
-const TESTS = ['pick-and-place.e2e.ts'];
+const TESTS = ['pick-and-place.e2e.ts', 'editor.e2e.ts'];
 const WSL = Boolean(process.env['WSL_DISTRO_NAME']);
 
 const toWindows = (path: string): string => execFileSync('wslpath', ['-w', path]).toString().trim();

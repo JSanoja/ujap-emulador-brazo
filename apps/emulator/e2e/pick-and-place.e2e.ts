@@ -35,8 +35,16 @@ try {
   };
 
   await page.goto(url);
-  await page.waitForFunction(() => 'EMULATOR' in window, null, { timeout: 60_000 });
-  await page.waitForTimeout(800);
+  // La escena está lista cuando se compilaron los shaders (Babylon lo hace de forma asíncrona).
+  await page.waitForFunction(
+    () => {
+      const w = window as unknown as { EMULATOR?: unknown; BABYLON_SCENE?: { isReady(): boolean } };
+      return w.EMULATOR !== undefined && (w.BABYLON_SCENE?.isReady() ?? false);
+    },
+    null,
+    { timeout: 60_000 },
+  );
+  await page.waitForTimeout(300);
   await shot('inicio');
 
   await page.selectOption('#programa select', 'examples/pick-and-place.txt');
