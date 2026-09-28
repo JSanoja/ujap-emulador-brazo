@@ -1,0 +1,20 @@
+# Rangos: lleva cada articulación a 0 % y a 100 % (sus límites), de a una, y vuelve al reposo.
+# Sirve para verificar los límites de los ejes (V1) y compararlos con el manual del LabVolt 5250 (D0).
+# A2 y A3 se prueban con el antebrazo recogido y la herramienta hacia arriba para no tocar la mesa:
+# con A2 al 100 % (110°) la muñeca queda a unos 4 cm de la mesa.
+# LabVolt 5250 (emulado): A1 A2 A3 A4 A5 pinza velocidad (todo en %). Pinza normal: 0 = abierta.
+50 26.7 58.1 58.3 50 0 50
+0 26.7 58.1 58.3 50 0 50
+100 26.7 58.1 58.3 50 0 50
+50 26.7 58.1 58.3 50 0 50
+50 26.7 0 20.8 50 0 50
+50 0 0 20.8 50 0 50
+50 100 0 20.8 50 0 30
+50 26.7 0 20.8 50 0 50
+50 26.7 100 20.8 50 0 50
+50 26.7 58.1 0 50 0 50
+50 26.7 58.1 100 50 0 50
+50 26.7 58.1 58.3 0 0 50
+50 26.7 58.1 58.3 100 0 50
+50 26.7 58.1 58.3 50 100 50
+50 26.7 58.1 58.3 50 0 50
