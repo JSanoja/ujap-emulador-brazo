@@ -257,6 +257,78 @@ body {
   display: none;
 }
 
+.encabezado {
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.encabezado h2 {
+  margin: 0;
+}
+
+.panel button.engranaje {
+  min-width: 36px;
+  font-size: 16px;
+}
+
+/* Indicador de "Invertir pinza": el TXT no guarda la opción. Invertida = resaltado. */
+.modo-pinza {
+  align-self: flex-start;
+  margin: -4px 0 10px;
+  padding: 2px 8px;
+  border: 1px solid #3a3d45;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.modo-pinza.invertida {
+  border-color: #f2c230;
+  background: rgba(242, 194, 48, 0.15);
+  color: #f2c230;
+  font-weight: 600;
+}
+
+.configuracion {
+  width: min(460px, calc(100% - 32px));
+}
+
+.configuracion .campo {
+  margin-bottom: 14px;
+}
+
+.configuracion .campo label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.configuracion .campo input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+}
+
+.configuracion select {
+  min-height: 36px;
+  padding: 4px 10px;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  background: #2a2d34;
+  color: var(--text);
+  font: inherit;
+}
+
+.configuracion .ayuda {
+  margin: 4px 0 0;
+  font-size: 12px;
+}
+
+.configuracion .errores {
+  margin: 0 0 12px;
+}
+
 /* Pantallas táctiles: objetivos de al menos 44 px. */
 @media (pointer: coarse) {
   .panel button,

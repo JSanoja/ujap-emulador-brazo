@@ -10,12 +10,15 @@
 import type { ProgramPoint } from '@emulador/core';
 import { defaultProgramName, type Emulator } from '../emulator';
 import { showDialog } from './dialog';
+import { saveTextFile } from './files';
 
 export interface ProgramPanelOptions {
   /** Programas de ejemplo: nombre visible y ruta del TXT (relativa a la app). */
   readonly examples: readonly { readonly label: string; readonly url: string }[];
   /** Devuelve la pieza a la zona A. */
   readonly onResetPiece: () => void;
+  /** Abre la configuración del emulador. */
+  readonly onOpenSettings: () => void;
 }
 
 const STATES = { idle: 'Detenido', running: 'Reproduciendo', paused: 'En pausa' } as const;
@@ -37,16 +40,6 @@ function row(className: string, ...children: HTMLElement[]): HTMLDivElement {
   return div;
 }
 
-/** Descarga un archivo de texto (web). En Android se reemplaza por el plugin Filesystem (C5). */
-function saveTextFile(name: string, text: string): void {
-  const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = name;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
 function formatValue(value: number): string {
   return String(Number(value.toFixed(2)));
 }
@@ -61,8 +54,13 @@ export function mountProgramPanel(
   // ---- Encabezado y archivo ----
   const title = document.createElement('h2');
   title.textContent = 'Programa';
+  const settingsButton = button('⚙', 'Configuración', 'engranaje');
+  settingsButton.addEventListener('click', () => options.onOpenSettings());
+  const header = row('encabezado', title, settingsButton);
   const name = document.createElement('p');
   name.className = 'nota';
+  // Indicador de "Invertir pinza": el TXT no guarda la opción, así que se muestra junto al programa.
+  const gripperMode = document.createElement('span');
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
   fileInput.accept = '.txt,text/plain';
@@ -118,8 +116,9 @@ export function mountProgramPanel(
   form.className = 'punto-form';
 
   container.append(
-    title,
+    header,
     name,
+    gripperMode,
     row('archivo', create, open, examples, exportButton, fileInput),
     row('controles', play, pause, stop, step, reset),
     status,
@@ -279,7 +278,12 @@ export function mountProgramPanel(
     const hasPoint = idle && selected >= 0;
 
     const fileName = emulator.name ?? `${defaultProgramName().replace(/\.txt$/, '')} (nuevo)`;
-    name.textContent = `${fileName}${editor.dirty ? ' • sin guardar' : ''} · ${points.length} puntos · pinza ${emulator.robot.gripper.inverted ? 'invertida' : 'normal'}`;
+    name.textContent = `${fileName}${editor.dirty ? ' • sin guardar' : ''} · ${points.length} puntos`;
+    const inverted = emulator.settings.gripperInverted;
+    gripperMode.className = `modo-pinza${inverted ? ' invertida' : ''}`;
+    gripperMode.textContent = inverted
+      ? 'Pinza invertida: 0 % = cerrada, 100 % = abierta'
+      : 'Pinza normal: 0 % = abierta, 100 % = cerrada';
 
     for (const b of [create, open, exportButton]) b.disabled = !idle;
     examples.disabled = !idle;

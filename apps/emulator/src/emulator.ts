@@ -1,14 +1,17 @@
 /**
- * Estado del emulador: robot, planificador, editor y ejecución del programa, y la opción
- * "Invertir pinza". Solo coordina objetos del núcleo; la escena y la interfaz leen de aquí.
+ * Estado del emulador: robot, planificador, editor y ejecución del programa, y la
+ * configuración (C6). Solo coordina objetos del núcleo; la escena y la interfaz leen de aquí.
  */
 import {
+  DEFAULT_SETTINGS,
   MotionPlanner,
   ProgramEditor,
   ProgramRunner,
   parseProgram,
   roundPoint,
+  serializeOptions,
   serializeProgram,
+  type EmulatorSettings,
   type ProgramError,
   type ProgramPoint,
   type RobotConfig,
@@ -28,13 +31,18 @@ export class Emulator {
   private robotConfig: RobotConfig;
   private currentPlanner: MotionPlanner;
   private currentRunner: ProgramRunner;
+  private currentSettings: EmulatorSettings;
   private programName: string | null = null;
   private listeners: (() => void)[] = [];
 
-  constructor(robot: RobotConfig) {
-    this.robotConfig = robot;
-    this.editor = new ProgramEditor(robot);
-    this.currentPlanner = new MotionPlanner(robot);
+  constructor(robot: RobotConfig, settings: EmulatorSettings = DEFAULT_SETTINGS) {
+    this.currentSettings = settings;
+    this.robotConfig = {
+      ...robot,
+      gripper: { ...robot.gripper, inverted: settings.gripperInverted },
+    };
+    this.editor = new ProgramEditor(this.robotConfig);
+    this.currentPlanner = new MotionPlanner(this.robotConfig);
     this.currentRunner = this.createRunner();
     this.editor.onChange = () => {
       // El programa que se ejecuta es siempre el del editor (solo se edita en reposo).
@@ -45,6 +53,10 @@ export class Emulator {
 
   get robot(): RobotConfig {
     return this.robotConfig;
+  }
+
+  get settings(): EmulatorSettings {
+    return this.currentSettings;
   }
 
   get planner(): MotionPlanner {
@@ -87,7 +99,7 @@ export class Emulator {
   /** Texto TXT del programa y nombre de archivo; lo marca como guardado. */
   exportProgram(): { readonly name: string; readonly text: string } {
     this.programName ??= defaultProgramName();
-    const text = serializeProgram(this.editor.points);
+    const text = serializeProgram(this.editor.points, serializeOptions(this.currentSettings));
     this.editor.markSaved();
     return { name: this.programName, text };
   }
@@ -129,17 +141,23 @@ export class Emulator {
   }
 
   /**
-   * Opción "Invertir pinza" (se aplica en reposo). El programa no cambia: solo cómo se
-   * interpreta el valor de la pinza.
+   * Aplica la configuración (solo en reposo). "Invertir pinza" no cambia el programa: solo
+   * cómo se interpreta el valor de la pinza. Devuelve `false` si no se pudo aplicar.
    */
-  setGripperInverted(inverted: boolean): void {
-    if (this.currentRunner.state !== 'idle' || inverted === this.robotConfig.gripper.inverted) {
-      return;
+  applySettings(settings: EmulatorSettings): boolean {
+    if (this.currentRunner.state !== 'idle') return false;
+    const inverted = settings.gripperInverted;
+    this.currentSettings = settings;
+    if (inverted !== this.robotConfig.gripper.inverted) {
+      this.robotConfig = {
+        ...this.robotConfig,
+        gripper: { ...this.robotConfig.gripper, inverted },
+      };
+      this.currentPlanner = new MotionPlanner(this.robotConfig, this.currentPlanner.pose);
+      this.currentRunner = this.createRunner();
     }
-    this.robotConfig = { ...this.robotConfig, gripper: { ...this.robotConfig.gripper, inverted } };
-    this.currentPlanner = new MotionPlanner(this.robotConfig, this.currentPlanner.pose);
-    this.currentRunner = this.createRunner();
     this.notify();
+    return true;
   }
 
   private createRunner(): ProgramRunner {

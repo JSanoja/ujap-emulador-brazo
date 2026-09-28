@@ -5,3 +5,4 @@ export * from './txt-format';
 export * from './motion-planner';
 export * from './program-runner';
 export * from './program-editor';
+export * from './settings';
