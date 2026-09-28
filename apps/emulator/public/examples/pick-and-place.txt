@@ -1,0 +1,14 @@
+# Pick and place: toma el cubo en la zona A y lo deja en la zona B.
+# LabVolt 5250 (emulado): A1 A2 A3 A4 A5 pinza velocidad (todo en %).
+# Pinza: 0 = abierta, 46 = cerrada sobre el cubo de 40 mm (con "Invertir pinza" desactivada).
+# ⚠ Valores provisionales: dependen de los rangos del manual (D0); se ajustan en C7.
+50 26.7 58.1 58.3 50 0 60
+36.8 31.8 70.5 84.6 50 0 60
+36.8 44.4 69.3 77.5 50 0 20
+36.8 44.4 69.3 77.5 50 46 30
+36.8 31.8 70.5 84.6 50 46 30
+63.2 31.8 70.5 84.6 50 46 60
+63.2 43.8 69.5 77.8 50 46 20
+63.2 43.8 69.5 77.8 50 0 30
+63.2 31.8 70.5 84.6 50 0 40
+50 26.7 58.1 58.3 50 0 60

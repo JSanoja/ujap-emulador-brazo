@@ -1,23 +1,56 @@
 import { Engine } from '@babylonjs/core';
 import { LABVOLT_5250 } from '@emulador/core';
+import { Emulator } from './emulator';
 import { createScene } from './scene/create-scene';
+import { createWorkcell } from './scene/workcell';
 import { mountAxisPanel } from './ui/axis-panel';
+import { mountProgramPanel } from './ui/program-panel';
 import './styles.css';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#render');
-const panel = document.querySelector<HTMLElement>('#panel');
-if (!canvas || !panel) {
-  throw new Error('Falta el canvas #render o el panel #panel en index.html');
+const axisContainer = document.querySelector<HTMLElement>('#ejes');
+const programContainer = document.querySelector<HTMLElement>('#programa');
+if (!canvas || !axisContainer || !programContainer) {
+  throw new Error('Faltan #render, #ejes o #programa en index.html');
 }
 
 const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true });
-const { scene, rig } = await createScene(engine);
-mountAxisPanel(panel, LABVOLT_5250, rig);
+const { scene, rig, shadows } = await createScene(engine);
+const workcell = createWorkcell(scene, shadows);
+const emulator = new Emulator(LABVOLT_5250);
 
-// Solo en desarrollo: acceso a la escena para las capturas automáticas (Playwright).
-if (import.meta.env.DEV) {
-  (window as unknown as { BABYLON_SCENE: unknown }).BABYLON_SCENE = scene;
-}
+const axes = mountAxisPanel(axisContainer, emulator);
+mountProgramPanel(programContainer, emulator, {
+  examples: [{ label: 'Pick and place (A → B)', url: 'examples/pick-and-place.txt' }],
+  onResetPiece: () => workcell.resetPiece(),
+});
 
-engine.runRenderLoop(() => scene.render());
+/** Paso de tiempo máximo: evita saltos tras una pausa larga del navegador (pestaña oculta). */
+const MAX_DT = 0.1;
+let panelTimer = 0;
+
+engine.runRenderLoop(() => {
+  const dt = Math.min(engine.getDeltaTime() / 1000, MAX_DT);
+  emulator.runner.tick(dt);
+
+  const pose = emulator.planner.pose;
+  pose.joints.forEach((degrees, i) => rig.setJointAngle(i, degrees));
+  // La pose del robot se aplica antes del agarre para que la pieza siga al punto de agarre.
+  rig.tool.computeWorldMatrix(true);
+  rig.setGripperOpening(workcell.update(rig.tool, pose.gripper, dt));
+
+  scene.render();
+
+  // Los deslizadores se actualizan unas 10 veces por segundo.
+  panelTimer += dt;
+  if (panelTimer >= 0.1) {
+    panelTimer = 0;
+    axes.refresh();
+  }
+});
 window.addEventListener('resize', () => engine.resize());
+
+// Acceso para las pruebas E2E y las capturas (Playwright): en desarrollo o con ?e2e en la URL.
+if (import.meta.env.DEV || new URLSearchParams(location.search).has('e2e')) {
+  Object.assign(window, { BABYLON_SCENE: scene, EMULATOR: emulator, WORKCELL: workcell });
+}

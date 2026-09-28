@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json",
     "android:sync": "vite build && cap sync android",
-    "android:open": "cap open android"
+    "android:open": "cap open android",
+    "e2e": "vite build && node e2e/run.ts"
   },
   "dependencies": {
     "@babylonjs/core": "^9.27.1",
