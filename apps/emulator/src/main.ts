@@ -25,6 +25,18 @@ mountProgramPanel(programContainer, emulator, {
   onResetPiece: () => workcell.resetPiece(),
 });
 
+// Pestañas (solo visibles en pantallas angostas): qué panel se muestra. Con un panel abierto,
+// el canvas ocupa solo la parte de arriba (ver styles.css), así que hay que redimensionarlo.
+for (const tab of document.querySelectorAll<HTMLButtonElement>('#pestanas button')) {
+  tab.addEventListener('click', () => {
+    document.body.dataset['tab'] = tab.dataset['tab'];
+    for (const other of document.querySelectorAll('#pestanas button')) {
+      other.setAttribute('aria-pressed', String(other === tab));
+    }
+    engine.resize();
+  });
+}
+
 /** Paso de tiempo máximo: evita saltos tras una pausa larga del navegador (pestaña oculta). */
 const MAX_DT = 0.1;
 let panelTimer = 0;

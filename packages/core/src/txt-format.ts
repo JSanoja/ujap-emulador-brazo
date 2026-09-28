@@ -158,6 +158,19 @@ export function serializeProgram(
     .join('');
 }
 
+/**
+ * Redondea los valores de un punto como al exportar (por defecto 1 decimal), para que lo que
+ * se ve en el editor sea lo mismo que queda en el archivo.
+ */
+export function roundPoint(point: ProgramPoint, decimals = 1): ProgramPoint {
+  const round = (value: number): number => Number(formatNumber(value, decimals));
+  return {
+    joints: point.joints.map(round),
+    gripper: round(point.gripper),
+    speed: round(point.speed),
+  };
+}
+
 function inRange(value: number, min: number): boolean {
   return Number.isFinite(value) && value >= min && value <= 100;
 }

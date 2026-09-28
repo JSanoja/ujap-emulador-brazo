@@ -7,8 +7,13 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <title>Emulador de brazo robótico</title>
   </head>
-  <body>
+  <body data-tab="programa">
     <canvas id="render" touch-action="none"></canvas>
+    <nav id="pestanas" aria-label="Paneles">
+      <button type="button" data-tab="programa" aria-pressed="true">Programa</button>
+      <button type="button" data-tab="ejes" aria-pressed="false">Ejes</button>
+      <button type="button" data-tab="vista" aria-pressed="false">Vista</button>
+    </nav>
     <aside id="programa" class="panel" aria-label="Programa"></aside>
     <aside id="ejes" class="panel" aria-label="Control de ejes"></aside>
     <script type="module" src="/src/main.ts"></script>

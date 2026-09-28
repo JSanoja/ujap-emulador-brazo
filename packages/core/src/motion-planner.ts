@@ -68,6 +68,11 @@ export class MotionPlanner {
     return this.current;
   }
 
+  /** Destino del movimiento en curso, o la pose actual si está detenido. */
+  get target(): RobotPose {
+    return this.motion?.to ?? this.current;
+  }
+
   /** Duración en segundos del movimiento en curso (0 si está detenido). */
   get duration(): number {
     return this.motion?.duration ?? 0;
@@ -154,15 +159,16 @@ export class MotionPlanner {
   }
 
   /**
-   * Pose actual expresada como punto del programa (modo teach).
+   * Pose expresada como punto del programa (modo teach).
    * @param speed Velocidad del punto en %.
+   * @param pose Pose a convertir; por defecto, la actual.
    */
-  toPoint(speed: number): ProgramPoint {
+  toPoint(speed: number, pose: RobotPose = this.current): ProgramPoint {
     return {
       joints: this.robot.joints.map((joint, i) =>
-        degreesToPercent(joint, this.current.joints[i] as number),
+        degreesToPercent(joint, pose.joints[i] as number),
       ),
-      gripper: gripperOpeningToPercent(this.robot.gripper, this.current.gripper),
+      gripper: gripperOpeningToPercent(this.robot.gripper, pose.gripper),
       speed,
     };
   }

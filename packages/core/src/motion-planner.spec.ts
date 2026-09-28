@@ -174,6 +174,18 @@ describe('Invertir pinza (caso 6 de la spec)', () => {
   });
 });
 
+describe('target', () => {
+  it('es el destino del movimiento en curso y la pose actual en reposo', () => {
+    const planner = new MotionPlanner(ROBOT, { joints: [0, 0], gripper: 10 });
+    expect(planner.target).toBe(planner.pose);
+    planner.moveTo(point(50, 20, 0, 100));
+    planner.step(0.5);
+    expect(planner.target).toEqual({ joints: [50, 20], gripper: 10 }); // 0 % = abierta
+    expect(planner.toPoint(30, planner.target)).toEqual(point(50, 20, 0, 30));
+    expect(planner.toPoint(30).joints[0]).toBeCloseTo(12.5, 12);
+  });
+});
+
 describe('runProgram', () => {
   const program = [point(10, 10, 0, 100), point(20, 20, 100, 100), point(0, 0, 0, 100)];
 

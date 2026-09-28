@@ -128,22 +128,203 @@ body {
   color: #111;
 }
 
-/* Pantallas angostas (teléfono en vertical): programa arriba y ejes abajo. C4 define el diseño táctil. */
+.panel button.primario,
+.dialogo button.primario {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #111;
+  font-weight: 600;
+}
+
+.puntos li.con-error {
+  color: #ff8a80;
+}
+
+.puntos li.actual.con-error {
+  color: #111;
+}
+
+.puntos li.vacio {
+  color: var(--muted);
+  font-family: system-ui, sans-serif;
+  list-style: none;
+  cursor: default;
+}
+
+.edicion button {
+  min-width: 38px;
+}
+
+.velocidad-nuevos {
+  align-items: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.panel input[type='number'] {
+  width: 64px;
+  min-height: 30px;
+  padding: 2px 6px;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  background: #15171b;
+  color: var(--text);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.punto-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 4px 0 0;
+  padding: 8px;
+  border: 1px solid #3a3d45;
+  border-radius: 8px;
+}
+
+.punto-form legend {
+  padding: 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.punto-form label {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.punto-form input[type='number'] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.punto-form[hidden] {
+  display: none;
+}
+
+.puntos {
+  flex: 1 1 auto;
+  min-height: 60px;
+  max-height: 30vh;
+  margin-bottom: 8px;
+}
+
+/* Diálogo propio de la app (en lugar de confirm/alert del navegador). */
+.dialogo {
+  max-width: min(420px, calc(100% - 32px));
+  padding: 18px;
+  border: 1px solid #3a3d45;
+  border-radius: 12px;
+  background: #22252b;
+  color: var(--text);
+}
+
+.dialogo::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.dialogo h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.dialogo p {
+  margin: 0 0 16px;
+  color: var(--muted);
+}
+
+.dialogo-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.dialogo button {
+  min-height: 40px;
+  padding: 6px 14px;
+  border: 1px solid #3a3d45;
+  border-radius: 8px;
+  background: #2a2d34;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+#pestanas {
+  display: none;
+}
+
+/* Pantallas táctiles: objetivos de al menos 44 px. */
+@media (pointer: coarse) {
+  .panel button,
+  .panel select,
+  .dialogo button,
+  #pestanas button {
+    min-height: 44px;
+  }
+
+  .panel input[type='number'] {
+    min-height: 40px;
+  }
+
+  .puntos li {
+    padding: 8px 6px;
+  }
+}
+
+/* Pantallas angostas (teléfono en vertical): un panel a la vez, elegido con las pestañas. */
 @media (max-width: 640px) {
-  .panel {
+  #pestanas {
+    position: absolute;
+    top: max(8px, env(safe-area-inset-top));
     left: 8px;
     right: 8px;
-    width: auto;
+    display: flex;
+    gap: 6px;
+    z-index: 2;
   }
 
-  #programa {
-    max-height: 38%;
+  #pestanas button {
+    flex: 1;
+    min-height: 40px;
+    border: 1px solid #3a3d45;
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--text);
+    font: inherit;
   }
 
-  #ejes {
+  #pestanas button[aria-pressed='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Con un panel abierto, la escena ocupa la parte de arriba y el panel la de abajo. */
+  body:not([data-tab='vista']) #render {
+    margin-top: 56px; /* debajo de las pestañas */
+    height: calc(44% - 56px);
+  }
+
+  .panel {
     top: auto;
+    left: 8px;
+    right: 8px;
     bottom: max(8px, env(safe-area-inset-bottom));
-    max-height: 34%;
+    width: auto;
+    height: calc(56% - 16px);
+    max-height: none;
+  }
+
+  body:not([data-tab='programa']) #programa,
+  body:not([data-tab='ejes']) #ejes {
+    display: none;
+  }
+
+  .puntos {
+    max-height: 22vh;
   }
 }
 
