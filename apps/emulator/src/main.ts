@@ -11,8 +11,13 @@ if (!canvas || !panel) {
 }
 
 const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true });
-const { scene, rig } = createScene(engine);
+const { scene, rig } = await createScene(engine);
 mountAxisPanel(panel, LABVOLT_5250, rig);
+
+// Solo en desarrollo: acceso a la escena para las capturas automáticas (Playwright).
+if (import.meta.env.DEV) {
+  (window as unknown as { BABYLON_SCENE: unknown }).BABYLON_SCENE = scene;
+}
 
 engine.runRenderLoop(() => scene.render());
 window.addEventListener('resize', () => engine.resize());

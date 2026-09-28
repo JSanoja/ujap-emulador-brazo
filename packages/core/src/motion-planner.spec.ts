@@ -33,7 +33,10 @@ function runUntilStopped(planner: MotionPlanner, dt = 1 / 60, limit = 1000): num
 describe('MotionPlanner', () => {
   it('pose inicial: ejes en 0° (limitado al rango) y pinza abierta', () => {
     const planner = new MotionPlanner(LABVOLT_5250);
-    expect(planner.pose).toEqual({ joints: [0, 0, 0, 0, 0], gripper: 50 });
+    expect(planner.pose).toEqual({
+      joints: [0, 0, 0, 0, 0],
+      gripper: LABVOLT_5250.gripper.maxOpening,
+    });
     expect(new MotionPlanner(ROBOT).pose.joints).toEqual([0, 0]);
     expect(planner.isAtTarget()).toBe(true);
   });
@@ -166,7 +169,7 @@ describe('Invertir pinza (caso 6 de la spec)', () => {
       runUntilStopped(planner);
     }
     expect(normal.pose.gripper).toBe(0); // cerrada
-    expect(flipped.pose.gripper).toBe(50); // abierta
+    expect(flipped.pose.gripper).toBe(LABVOLT_5250.gripper.maxOpening); // abierta
     expect(flipped.toPoint(50).gripper).toBe(100);
   });
 });

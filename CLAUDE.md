@@ -15,6 +15,7 @@ Contexto en `..\docs\` (leer al empezar):
 
 - `packages/core` (`@emulador/core`): TypeScript puro, **sin dependencias de DOM ni de Babylon**. Todo lo que sea lógica del robot (TXT, conversiones, planificador, validación) va aquí y con pruebas. Se consume como código fuente (`exports` → `src/index.ts`), sin paso de build.
 - `apps/emulator` (`@emulador/emulator`): escena y UI. No implementa lógica del robot: llama al núcleo.
+- `tools/model` (`@emulador/model-tools`): script Node (TypeScript sin compilar, Node 24) que convierte el OBJ del iRobot en `apps/emulator/public/models/robot.glb` con pivotes y pose cero (`npm run build:robot -w @emulador/model-tools`). Ver `modelos/README.md`.
 - Las rotaciones de la escena se aplican a partir de ángulos en grados que entrega el núcleo.
 
 ## Reglas
@@ -25,6 +26,8 @@ Contexto en `..\docs\` (leer al empezar):
 - **Identificadores en inglés:** variables, constantes, funciones, métodos, clases, interfaces, tipos y nombres de archivo del código se escriben en inglés (`percentToDegrees`, `JointConfig`, `txt-format.ts`). Los textos que ve el usuario y los comentarios siguen en español.
 - Rama por workunit (`n1-nucleo`, `c1-spike`, `c2-modelos`, …); commits pequeños; merge a `main` con `npm run check` en verde. Etiquetar hitos (`v0.1-esqueleto`, …).
 - Antes de cada cambio visual grande, capturas en `..\docs\capturas\` (prefijo `app2-`), para el Cap. IV.
+- **Vite en WSL sobre `/mnt/d`:** no llegan eventos de cambio de archivos; `vite.config.ts` activa el sondeo (`usePolling`) en ese caso. Si el navegador muestra código viejo, reiniciar el servidor.
+- **Capturas y E2E:** `playwright-core` (dependencia de desarrollo) con el Node de Windows y Chrome (`channel: 'chrome'`, `--use-angle=swiftshader`); en desarrollo la escena queda en `window.BABYLON_SCENE`.
 - **`node_modules` se instala desde WSL**, que es donde se ejecuta; esbuild/rolldown tienen binarios por plataforma. Si alguna vez se instala desde Windows, borrar `node_modules` y reinstalar desde WSL.
 - Finales de línea LF, controlados por `.gitattributes`.
 - Valores del LabVolt 5250 en `packages/core/src/robot-config.ts` son **provisionales** hasta D0 (manual).

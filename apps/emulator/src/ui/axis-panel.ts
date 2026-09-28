@@ -3,6 +3,7 @@
  * resultante según el núcleo. Base para el panel definitivo de C4.
  */
 import {
+  degreesToPercent,
   gripperOpening,
   percentToDegrees,
   type GripperConfig,
@@ -31,7 +32,7 @@ function slider(
   input.id = id;
   input.min = '0';
   input.max = '100';
-  input.step = '0.5';
+  input.step = 'any';
   input.value = String(value);
   row.append(lab, output, input);
   return { row, input, output };
@@ -42,11 +43,13 @@ export function mountAxisPanel(container: HTMLElement, robot: RobotConfig, rig: 
   title.textContent = robot.name;
   const note = document.createElement('p');
   note.className = 'nota';
-  note.textContent = 'Esqueleto de la App 2. Solo A1 y A2 mueven el robot provisional.';
+  note.textContent =
+    'Control manual provisional (C2). Parte de la pose cero: todos los ejes en 0°.';
   container.append(title, note);
 
   robot.joints.forEach((joint, index) => {
-    const { row, input, output } = slider(`eje-${joint.id}`, `${joint.id} · ${joint.name}`, 50);
+    const zero = degreesToPercent(joint, 0);
+    const { row, input, output } = slider(`eje-${joint.id}`, `${joint.id} · ${joint.name}`, zero);
     const update = (): void => {
       const percent = Number(input.value);
       const degrees = percentToDegrees(joint, percent);
@@ -62,7 +65,9 @@ export function mountAxisPanel(container: HTMLElement, robot: RobotConfig, rig: 
   const { row, input, output } = slider('eje-pinza', 'Pinza', 0);
   const updateGripper = (): void => {
     const percent = Number(input.value);
-    output.value = `${percent.toFixed(1)} % → ${gripperOpening(gripper, percent).toFixed(1)} mm`;
+    const opening = gripperOpening(gripper, percent);
+    output.value = `${percent.toFixed(1)} % → ${opening.toFixed(1)} mm`;
+    rig.setGripperOpening(opening);
   };
   input.addEventListener('input', updateGripper);
 
