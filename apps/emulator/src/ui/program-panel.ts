@@ -33,6 +33,29 @@ function button(label: string, title: string, className = ''): HTMLButtonElement
   return b;
 }
 
+/**
+ * Íconos de ejecución en SVG: los símbolos Unicode (⏸ ⏹) se dibujan como emoji de color en
+ * Android (Samsung), aun con el selector de variación de texto.
+ */
+const ICONS = {
+  play: 'M7 4.5v15l12-7.5z',
+  pause: 'M6 4h4v16H6zM14 4h4v16h-4z',
+  stop: 'M6 6h12v12H6z',
+  step: 'M5 4.5v15l10-7.5zM16 4h3v16h-3z',
+} as const;
+
+function iconButton(icon: keyof typeof ICONS, title: string): HTMLButtonElement {
+  const b = button('', title, 'icono');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', ICONS[icon]);
+  svg.append(path);
+  b.append(svg);
+  return b;
+}
+
 function row(className: string, ...children: HTMLElement[]): HTMLDivElement {
   const div = document.createElement('div');
   div.className = `fila ${className}`;
@@ -74,10 +97,10 @@ export function mountProgramPanel(
   for (const example of options.examples) examples.append(new Option(example.label, example.url));
 
   // ---- Ejecución ----
-  const play = button('▶', 'Reproducir (desde el punto seleccionado)');
-  const pause = button('⏸', 'Pausar');
-  const stop = button('⏹', 'Detener');
-  const step = button('⏭', 'Paso a paso: ir al siguiente punto');
+  const play = iconButton('play', 'Reproducir (desde el punto seleccionado)');
+  const pause = iconButton('pause', 'Pausar');
+  const stop = iconButton('stop', 'Detener');
+  const step = iconButton('step', 'Paso a paso: ir al siguiente punto');
   const reset = button('↺ Pieza', 'Devolver la pieza a la zona A');
   const status = document.createElement('p');
   status.className = 'estado';
@@ -138,9 +161,9 @@ export function mountProgramPanel(
   };
 
   // ---- Archivo ----
-  const doExport = (): void => {
+  const doExport = async (): Promise<void> => {
     const file = emulator.exportProgram();
-    saveTextFile(file.name, file.text);
+    await saveTextFile(file.name, file.text);
   };
 
   /** Si hay cambios sin guardar, pregunta qué hacer. Devuelve `false` para cancelar. */
@@ -155,7 +178,7 @@ export function mountProgramPanel(
         { id: 'cancel', label: 'Cancelar' },
       ],
     });
-    if (choice === 'export') doExport();
+    if (choice === 'export') await doExport();
     return choice === 'export' || choice === 'discard';
   };
 

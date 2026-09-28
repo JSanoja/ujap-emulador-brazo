@@ -88,6 +88,18 @@ body {
   min-width: 40px;
 }
 
+.panel button.icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel button.icono svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
 .estado {
   margin: 0 0 6px;
   font-weight: 600;
@@ -145,6 +157,7 @@ body {
 }
 
 .puntos li.vacio {
+  white-space: normal;
   color: var(--muted);
   font-family: system-ui, sans-serif;
   list-style: none;
@@ -347,8 +360,8 @@ body {
   }
 }
 
-/* Pantallas angostas (teléfono en vertical): un panel a la vez, elegido con las pestañas. */
-@media (max-width: 640px) {
+/* Pantallas angostas y tabletas en vertical: un panel a la vez, elegido con las pestañas. */
+@media (max-width: 640px), (orientation: portrait) and (max-width: 1100px) {
   #pestanas {
     position: absolute;
     top: max(8px, env(safe-area-inset-top));

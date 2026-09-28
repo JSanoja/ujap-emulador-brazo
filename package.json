@@ -20,6 +20,8 @@
     "preview": "npm run preview -w @emulador/emulator",
     "test": "npm run test --workspaces --if-present",
     "e2e": "npm run e2e -w @emulador/emulator --",
+    "e2e:device": "npm run e2e:device -w @emulador/emulator --",
+    "android": "npm run android -w @emulador/emulator --",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "eslint .",
     "format": "prettier --write .",

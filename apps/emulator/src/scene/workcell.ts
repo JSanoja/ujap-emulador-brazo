@@ -1,8 +1,8 @@
 /**
  * Mesa de trabajo: zonas A y B marcadas y una pieza (cubo) que la pinza puede tomar.
  *
- * Agarre por proximidad (sin motor de físicas): si la pinza se cierra hasta el ancho
- * de la pieza con la pieza entre los dedos, la pieza se engancha al punto de agarre
+ * Agarre por proximidad (sin motor de físicas): si la pinza se cierra (pasa de abierta a
+ * cerrada) hasta el ancho de la pieza con la pieza entre los dedos, la pieza se engancha al punto de agarre
  * (nodo `Tool`) y se mueve con él; al abrir, se suelta y cae hasta la mesa.
  */
 import {
@@ -70,6 +70,8 @@ export function createWorkcell(scene: Scene, shadows: ShadowGenerator): Workcell
 
   let holding = false;
   let fallSpeed = 0;
+  /** Si en el cuadro anterior la pinza estaba abierta más que el ancho de la pieza. */
+  let wasOpen = false;
   const widthMm = PIECE_SIZE * 1000;
 
   const resetPiece = (): void => {
@@ -88,10 +90,13 @@ export function createWorkcell(scene: Scene, shadows: ShadowGenerator): Workcell
     },
     resetPiece,
     update(tool, openingMm, dt) {
-      if (holding && openingMm > widthMm + GRASP_MARGIN_MM) {
+      const limit = widthMm + GRASP_MARGIN_MM;
+      if (holding && openingMm > limit) {
         piece.setParent(null); // conserva la pose en el mundo
         holding = false;
-      } else if (!holding && openingMm <= widthMm + GRASP_MARGIN_MM) {
+      } else if (!holding && wasOpen && openingMm <= limit) {
+        // Solo se toma al cerrar la pinza sobre la pieza: una pinza ya cerrada que pasa
+        // junto a la pieza no la engancha.
         const distance = Vector3.Distance(tool.getAbsolutePosition(), piece.getAbsolutePosition());
         if (distance <= GRASP_DISTANCE) {
           piece.setParent(tool);
@@ -99,6 +104,7 @@ export function createWorkcell(scene: Scene, shadows: ShadowGenerator): Workcell
           fallSpeed = 0;
         }
       }
+      wasOpen = openingMm > limit;
 
       // Caída libre hasta apoyarse en la mesa (se endereza al apoyarse).
       const rest = PIECE_SIZE / 2;
