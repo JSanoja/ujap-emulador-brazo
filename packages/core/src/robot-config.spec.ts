@@ -17,20 +17,20 @@ describe('robot-config', () => {
         { id: 'A1', name: 'a', min: 0, max: 90, maxSpeed: 10 },
         { id: 'A2', name: 'b', min: 0, max: 90, maxSpeed: 10 },
       ],
-      gripper: { maxOpening: 10, inverted: false },
+      gripper: { maxOpening: 10, maxSpeed: 10, inverted: false },
     };
     expect(valuesPerLine(robot)).toBe(4);
   });
 
-  it('detecta límites invertidos, ids duplicados y velocidades no positivas', () => {
+  it('detecta límites invertidos, ids duplicados, apertura y velocidades no positivas', () => {
     const robot: RobotConfig = {
       name: 'mal',
       joints: [
         { id: 'A1', name: 'a', min: 10, max: -10, maxSpeed: 10 },
         { id: 'A1', name: 'b', min: 0, max: 90, maxSpeed: 0 },
       ],
-      gripper: { maxOpening: 0, inverted: false },
+      gripper: { maxOpening: 0, maxSpeed: 0, inverted: false },
     };
-    expect(validateRobotConfig(robot)).toHaveLength(4);
+    expect(validateRobotConfig(robot)).toHaveLength(5);
   });
 });
