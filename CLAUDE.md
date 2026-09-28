@@ -29,6 +29,7 @@ Contexto en `..\docs\` (leer al empezar):
 - **Vite en WSL sobre `/mnt/d`:** no llegan eventos de cambio de archivos; `vite.config.ts` activa el sondeo (`usePolling`) en ese caso. Si el navegador muestra código viejo, reiniciar el servidor.
 - **E2E y capturas:** `npm run e2e` (compila, sirve con `vite preview` y ejecuta `apps/emulator/e2e/*.e2e.ts` con el Node de Windows y Chrome vía `playwright-core`); `npm run e2e -- --capturas` guarda las imágenes en `../docs/capturas/`. La escena, el emulador y la mesa quedan en `window` en desarrollo o con `?e2e` en la URL. No forma parte de `npm run check` (necesita Chrome).
 - **`node_modules` se instala desde WSL**, que es donde se ejecuta; esbuild/rolldown tienen binarios por plataforma. Si alguna vez se instala desde Windows, borrar `node_modules` y reinstalar desde WSL.
+- **Confirmaciones y avisos con diálogo propio de la app**, nunca `confirm()`, `alert()` ni `prompt()` del navegador: se ven distinto en Android y bloquean las pruebas E2E con Playwright.
 - Finales de línea LF, controlados por `.gitattributes`.
 - Valores del LabVolt 5250 en `packages/core/src/robot-config.ts` son **provisionales** hasta D0 (manual).
 
