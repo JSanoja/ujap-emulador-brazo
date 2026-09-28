@@ -19,7 +19,7 @@ export default defineConfig({
     VitePWA({
       injectRegister: false,
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['favicon.svg', 'logo-ujap.png'],
       manifest: {
         name: 'Emulador de brazo robótico',
         short_name: 'Emulador brazo',
@@ -30,8 +30,8 @@ export default defineConfig({
         scope: './',
         display: 'standalone',
         orientation: 'any',
-        background_color: '#1b1d22',
-        theme_color: '#1b1d22',
+        background_color: '#405c81',
+        theme_color: '#2b4061',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
