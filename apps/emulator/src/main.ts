@@ -1,6 +1,7 @@
 import { Engine } from '@babylonjs/core';
 import { LABVOLT_5250 } from '@emulador/core';
 import { Emulator } from './emulator';
+import { EXAMPLES, exampleUrl } from './examples';
 import { createScene } from './scene/create-scene';
 import { createWorkcell } from './scene/workcell';
 import { LocalSettingsStore } from './settings-store';
@@ -24,7 +25,7 @@ const emulator = new Emulator(LABVOLT_5250, await settingsStore.load());
 
 const axes = mountAxisPanel(axisContainer, emulator);
 mountProgramPanel(programContainer, emulator, {
-  examples: [{ label: 'Pick and place (A → B)', url: 'examples/pick-and-place.txt' }],
+  examples: EXAMPLES.map((example) => ({ label: example.label, url: exampleUrl(example) })),
   onResetPiece: () => workcell.resetPiece(),
   onOpenSettings: () => openSettingsDialog(emulator, settingsStore),
 });

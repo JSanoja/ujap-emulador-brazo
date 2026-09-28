@@ -1,0 +1,11 @@
+# Velocidades: el mismo movimiento (sobre la zona A → sobre la zona B) al 100 %, al 50 % y al 10 %.
+# Con el movimiento sincronizado, cada tramo tarda en proporción inversa a la velocidad: 1 : 2 : 10.
+# LabVolt 5250 (emulado): A1 A2 A3 A4 A5 pinza velocidad (todo en %). Pinza normal: 0 = abierta.
+50 26.7 58.1 58.3 50 0 100
+36.8 31.8 70.5 84.6 50 0 100
+63.2 31.8 70.5 84.6 50 0 100
+36.8 31.8 70.5 84.6 50 0 50
+63.2 31.8 70.5 84.6 50 0 50
+36.8 31.8 70.5 84.6 50 0 10
+63.2 31.8 70.5 84.6 50 0 10
+50 26.7 58.1 58.3 50 0 100

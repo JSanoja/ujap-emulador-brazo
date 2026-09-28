@@ -1,0 +1,14 @@
+# Pick and place para usar con "Invertir pinza" ACTIVADA (0 = cerrada, 100 = abierta).
+# Es el mismo programa que pick-and-place.txt con el valor de la pinza cambiado a 100 − p:
+# abierta = 100 y cerrada sobre el cubo de 40 mm = 54.
+# ⚠ Valores provisionales: dependen de los rangos del manual (D0).
+50 26.7 58.1 58.3 50 100 60
+36.8 31.8 70.5 84.6 50 100 60
+36.8 44.4 69.3 77.5 50 100 20
+36.8 44.4 69.3 77.5 50 54 30
+36.8 31.8 70.5 84.6 50 54 30
+63.2 31.8 70.5 84.6 50 54 60
+63.2 43.8 69.5 77.8 50 54 20
+63.2 43.8 69.5 77.8 50 100 30
+63.2 31.8 70.5 84.6 50 100 40
+50 26.7 58.1 58.3 50 100 60
