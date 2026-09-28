@@ -49,15 +49,6 @@ export function mountAxisPanel(container: HTMLElement, emulator: Emulator): Axis
     emulator.jog('gripper', Number(gripper.input.value)),
   );
 
-  const option = document.createElement('label');
-  option.className = 'opcion';
-  const check = document.createElement('input');
-  check.type = 'checkbox';
-  check.id = 'invertir-pinza';
-  check.addEventListener('change', () => emulator.setGripperInverted(check.checked));
-  option.append(check, 'Invertir pinza (0 % = cerrada)');
-  container.append(option);
-
   const refresh = (): void => {
     const { robot, planner, runner } = emulator;
     const idle = runner.state === 'idle';
@@ -75,8 +66,6 @@ export function mountAxisPanel(container: HTMLElement, emulator: Emulator): Axis
     if (document.activeElement !== gripper.input) gripper.input.value = String(percent);
     gripper.input.disabled = !idle;
     gripper.output.value = `${percent.toFixed(1)} % · ${pose.gripper.toFixed(1)} mm`;
-    check.checked = robot.gripper.inverted;
-    check.disabled = !idle;
   };
   refresh();
   return { refresh };

@@ -3,8 +3,10 @@ import { LABVOLT_5250 } from '@emulador/core';
 import { Emulator } from './emulator';
 import { createScene } from './scene/create-scene';
 import { createWorkcell } from './scene/workcell';
+import { LocalSettingsStore } from './settings-store';
 import { mountAxisPanel } from './ui/axis-panel';
 import { mountProgramPanel } from './ui/program-panel';
+import { openSettingsDialog } from './ui/settings-dialog';
 import './styles.css';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#render');
@@ -17,12 +19,14 @@ if (!canvas || !axisContainer || !programContainer) {
 const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true });
 const { scene, rig, shadows } = await createScene(engine);
 const workcell = createWorkcell(scene, shadows);
-const emulator = new Emulator(LABVOLT_5250);
+const settingsStore = new LocalSettingsStore();
+const emulator = new Emulator(LABVOLT_5250, await settingsStore.load());
 
 const axes = mountAxisPanel(axisContainer, emulator);
 mountProgramPanel(programContainer, emulator, {
   examples: [{ label: 'Pick and place (A → B)', url: 'examples/pick-and-place.txt' }],
   onResetPiece: () => workcell.resetPiece(),
+  onOpenSettings: () => openSettingsDialog(emulator, settingsStore),
 });
 
 // Pestañas (solo visibles en pantallas angostas): qué panel se muestra. Con un panel abierto,
