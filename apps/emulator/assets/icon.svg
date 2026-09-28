@@ -1,0 +1,13 @@
+<!-- Ícono de la app (fuente). Grilla de 108 × 108 como los íconos adaptativos de Android:
+     el dibujo queda dentro de la zona segura central (21–87). Se usa en:
+     - android/app/src/main/res/drawable/ic_launcher_foreground.xml (mismas formas, en vector)
+     - public/icons/*.png y los mipmap-*/ic_launcher*.png (generados con scripts/icons.ts) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <rect width="108" height="108" fill="#1b1d22"/>
+  <rect x="36" y="74" width="26" height="6" rx="2" fill="#6b6f78"/>
+  <rect x="42" y="66" width="14" height="9" fill="#6b6f78"/>
+  <path d="M49,66 L44,46" stroke="#ff5d00" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <path d="M44,46 L68,38" stroke="#ff5d00" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <path d="M41,46a3,3 0 1,0 6,0a3,3 0 1,0 -6,0" fill="#1b1d22"/>
+  <path d="M68,38 L71,44 M66,49 L71,44 L76,49" stroke="#e8e8ea" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>

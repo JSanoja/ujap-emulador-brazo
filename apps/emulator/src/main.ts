@@ -1,14 +1,21 @@
 import { Engine } from '@babylonjs/core';
+import { Capacitor } from '@capacitor/core';
 import { LABVOLT_5250 } from '@emulador/core';
 import { Emulator } from './emulator';
 import { EXAMPLES, exampleUrl } from './examples';
 import { createScene } from './scene/create-scene';
 import { createWorkcell } from './scene/workcell';
-import { LocalSettingsStore } from './settings-store';
+import { createSettingsStore } from './settings-store';
 import { mountAxisPanel } from './ui/axis-panel';
 import { mountProgramPanel } from './ui/program-panel';
 import { openSettingsDialog } from './ui/settings-dialog';
 import './styles.css';
+
+// PWA: el service worker (caché para usar la app sin conexión) solo se registra en la web;
+// dentro del APK los archivos ya son locales.
+if (!Capacitor.isNativePlatform() && !import.meta.env.DEV) {
+  void import('virtual:pwa-register').then(({ registerSW }) => registerSW({ immediate: true }));
+}
 
 const canvas = document.querySelector<HTMLCanvasElement>('#render');
 const axisContainer = document.querySelector<HTMLElement>('#ejes');
@@ -17,10 +24,13 @@ if (!canvas || !axisContainer || !programContainer) {
   throw new Error('Faltan #render, #ejes o #programa en index.html');
 }
 
-const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true });
+// Resolución nativa en pantallas de alta densidad (teléfonos y tabletas), limitada a 2×
+// para no castigar el rendimiento. Babylon por defecto dibuja en píxeles CSS.
+const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true }, false);
+engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, 2));
 const { scene, rig, shadows } = await createScene(engine);
 const workcell = createWorkcell(scene, shadows);
-const settingsStore = new LocalSettingsStore();
+const settingsStore = createSettingsStore();
 const emulator = new Emulator(LABVOLT_5250, await settingsStore.load());
 
 const axes = mountAxisPanel(axisContainer, emulator);
