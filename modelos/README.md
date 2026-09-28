@@ -6,7 +6,8 @@ El emulador usa el modelo **iRobot**: 5 ejes y pinza de dos dedos, con la jerarq
 
 - Original (fuera del repo, 75 MB + C4D): `..\..\modelos 3d\o1j4e9phg8w0-iRobot\`. No se versiona: GitHub avisa desde 50 MB y rechaza archivos de más de 100 MB.
 - Selección, datos medidos (ejes, pose, polígonos) y pasos de C2: `..\..\docs\06-SELECCION-MODELO-3D.md`.
-- ⚠ Origen y licencia por verificar antes de publicar el GLB (repositorio público).
+- Origen: Free3D, "Industrial robot arm" (descarga `o1j4e9phg8w0-iRobot.zip`, OBJ + C4D; hecho en SolidWorks y armado en Cinema 4D): https://free3d.com/es/modelo-3d/industry-robot-arm-37354.html
+- ⚠ Autor y licencia por verificar en esa página antes de publicar el GLB (repositorio público).
 
 ### Conversión a GLB (C2)
 
