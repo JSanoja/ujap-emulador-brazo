@@ -50,6 +50,12 @@ export default defineConfig({
     host: true,
     // En WSL, los archivos de /mnt/<unidad> no avisan sus cambios (inotify): sin sondeo,
     // Vite sirve módulos viejos y no recarga al editar desde Windows.
-    watch: { usePolling: WSL_WINDOWS_DRIVE, interval: 300 },
+    // Se excluyen android/ (miles de archivos de Gradle) y dist/: con sondeo sobre /mnt/<unidad>
+    // saturaban el servidor (el GLB tardaba casi un minuto en llegar).
+    watch: {
+      usePolling: WSL_WINDOWS_DRIVE,
+      interval: 300,
+      ignored: ['**/android/**', '**/dist/**'],
+    },
   },
 });

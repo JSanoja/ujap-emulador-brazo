@@ -69,7 +69,14 @@ export interface RobotScene {
   readonly shadows: ShadowGenerator;
 }
 
-export async function createScene(engine: Engine): Promise<RobotScene> {
+/**
+ * Crea la escena y carga el modelo del robot.
+ * @param onModelProgress avance de la descarga del modelo (0 a 1), si el servidor informa el tamaño.
+ */
+export async function createScene(
+  engine: Engine,
+  onModelProgress?: (fraction: number) => void,
+): Promise<RobotScene> {
   const scene = new Scene(engine);
   scene.clearColor = Color4.FromHexString('#405c81ff');
 
@@ -103,7 +110,11 @@ export async function createScene(engine: Engine): Promise<RobotScene> {
   ground.material = groundMaterial;
   ground.receiveShadows = true;
 
-  const container = await LoadAssetContainerAsync(MODEL_URL, scene);
+  const container = await LoadAssetContainerAsync(MODEL_URL, scene, {
+    onProgress: (event) => {
+      if (event.lengthComputable && event.total > 0) onModelProgress?.(event.loaded / event.total);
+    },
+  });
   container.addAllToScene();
 
   const nodes = new Map<string, TransformNode>();

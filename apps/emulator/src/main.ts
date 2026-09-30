@@ -7,6 +7,7 @@ import { createScene } from './scene/create-scene';
 import { createWorkcell } from './scene/workcell';
 import { createSettingsStore } from './settings-store';
 import { mountAxisPanel } from './ui/axis-panel';
+import { mountLoadingScreen } from './ui/loading-screen';
 import { mountProgramPanel } from './ui/program-panel';
 import { openSettingsDialog } from './ui/settings-dialog';
 import './styles.css';
@@ -20,15 +21,24 @@ if (!Capacitor.isNativePlatform() && !import.meta.env.DEV) {
 const canvas = document.querySelector<HTMLCanvasElement>('#render');
 const axisContainer = document.querySelector<HTMLElement>('#ejes');
 const programContainer = document.querySelector<HTMLElement>('#programa');
-if (!canvas || !axisContainer || !programContainer) {
-  throw new Error('Faltan #render, #ejes o #programa en index.html');
+const loadingContainer = document.querySelector<HTMLElement>('#carga');
+if (!canvas || !axisContainer || !programContainer || !loadingContainer) {
+  throw new Error('Faltan #render, #ejes, #programa o #carga en index.html');
 }
+const loading = mountLoadingScreen(loadingContainer);
+loading.stage('Cargando el modelo del robot…');
 
 // Resolución nativa en pantallas de alta densidad (teléfonos y tabletas), limitada a 2×
 // para no castigar el rendimiento. Babylon por defecto dibuja en píxeles CSS.
 const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: true }, false);
 engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, 2));
-const { scene, rig, shadows } = await createScene(engine);
+const { scene, rig, shadows } = await createScene(engine, (fraction) =>
+  loading.progress('Cargando el modelo del robot…', fraction),
+).catch((error: unknown) => {
+  loading.fail('No se pudo cargar la escena. Recargue la página para intentarlo de nuevo.');
+  throw error;
+});
+loading.stage('Preparando la escena…');
 const workcell = createWorkcell(scene, shadows);
 const settingsStore = createSettingsStore();
 const emulator = new Emulator(LABVOLT_5250, await settingsStore.load());
@@ -76,6 +86,8 @@ engine.runRenderLoop(() => {
   }
 });
 window.addEventListener('resize', () => engine.resize());
+// La pantalla de carga se retira cuando los materiales y sombras están compilados.
+scene.executeWhenReady(() => loading.hide());
 
 // Acceso para las pruebas E2E y las capturas (Playwright): en desarrollo o con ?e2e en la URL.
 if (import.meta.env.DEV || new URLSearchParams(location.search).has('e2e')) {

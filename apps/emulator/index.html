@@ -6,6 +6,8 @@
     <meta name="theme-color" content="#2b4061" />
     <meta name="author" content="Ing. Juan Sanoja" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <!-- Cabecera y pantalla de carga con estilo antes de que llegue el JavaScript. -->
+    <link rel="stylesheet" href="/src/shell.css" />
     <title>Emulador de brazo robótico — UJAP</title>
   </head>
   <body data-tab="programa">
@@ -28,6 +30,12 @@
     </header>
     <main id="escena">
       <canvas id="render" touch-action="none"></canvas>
+      <!-- Pantalla de carga: main.ts cambia la etapa, muestra el avance del modelo y la retira. -->
+      <div id="carga" role="status" aria-live="polite">
+        <div class="giro" aria-hidden="true"></div>
+        <p class="etapa">Cargando el emulador…</p>
+        <div class="progreso" hidden><span></span></div>
+      </div>
       <nav id="pestanas" aria-label="Paneles">
         <button type="button" data-tab="programa" aria-pressed="true">Programa</button>
         <button type="button" data-tab="ejes" aria-pressed="false">Ejes</button>
