@@ -21,6 +21,7 @@ Contexto en `..\docs\` (leer al empezar):
 ## Reglas
 
 - **Git y GitHub solo manual (normativa):** Claude no ejecuta `git commit`, `git push`, `git tag`, `gh` ni ninguna otra operación que escriba en el repositorio o en GitHub. Cuando haga falta, entrega los comandos listos para que Juan los ejecute.
+- **Mensajes de commit sin atribución a Claude:** no incluir la línea `Co-Authored-By: Claude … <noreply@anthropic.com>` (ni otra firma de Claude) en los mensajes de commit ni en las descripciones de PR que se le propongan a Juan.
 - **Línea de comandos: WSL (Ubuntu).** Todos los comandos que se le pasen a Juan son de Linux (bash), con rutas `/mnt/d/AI - FOLDER/Tesis UJAP/...` entre comillas. Node (nvm), `gh` y Git se usan desde WSL.
 - Idioma: español en comentarios, commits, mensajes de la interfaz y de error.
 - **Identificadores en inglés:** variables, constantes, funciones, métodos, clases, interfaces, tipos y nombres de archivo del código se escriben en inglés (`percentToDegrees`, `JointConfig`, `txt-format.ts`). Los textos que ve el usuario y los comentarios siguen en español.
