@@ -65,7 +65,16 @@ async function connect(): Promise<{ page: Page; close: () => Promise<void> }> {
     'tcp:9223',
     `localabstract:webview_devtools_remote_${pid}`,
   ]);
-  const browser = await chromium.connectOverCDP(cdpUrl);
+  // WSL tarda un momento en exponer a Windows el puerto recién reenviado: se reintenta.
+  let browser: Awaited<ReturnType<typeof chromium.connectOverCDP>> | undefined;
+  for (let attempt = 1; !browser; attempt++) {
+    try {
+      browser = await chromium.connectOverCDP(cdpUrl);
+    } catch (error) {
+      if (attempt >= 10) throw error;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  }
   const page = browser.contexts()[0]?.pages()[0];
   if (!page) throw new Error('No se encontró la página del WebView.');
   page.on('console', (m) => {
