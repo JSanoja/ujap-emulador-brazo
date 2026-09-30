@@ -71,7 +71,7 @@ export interface RobotScene {
 
 export async function createScene(engine: Engine): Promise<RobotScene> {
   const scene = new Scene(engine);
-  scene.clearColor = Color4.FromHexString('#1b1d22ff');
+  scene.clearColor = Color4.FromHexString('#405c81ff');
 
   // Cámara orbital con vertical fija: más natural en pantallas táctiles que el trackball de la App 1.
   // De frente al robot (que mira hacia +Z), con las zonas A y B a los lados.

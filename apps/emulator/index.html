@@ -3,19 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#1b1d22" />
+    <meta name="theme-color" content="#2b4061" />
+    <meta name="author" content="Ing. Juan Sanoja" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <title>Emulador de brazo robótico</title>
+    <title>Emulador de brazo robótico — UJAP</title>
   </head>
   <body data-tab="programa">
-    <canvas id="render" touch-action="none"></canvas>
-    <nav id="pestanas" aria-label="Paneles">
-      <button type="button" data-tab="programa" aria-pressed="true">Programa</button>
-      <button type="button" data-tab="ejes" aria-pressed="false">Ejes</button>
-      <button type="button" data-tab="vista" aria-pressed="false">Vista</button>
-    </nav>
-    <aside id="programa" class="panel" aria-label="Programa"></aside>
-    <aside id="ejes" class="panel" aria-label="Control de ejes"></aside>
+    <!-- Identificación del trabajo: universidad, título de la tesis y autor. -->
+    <header id="cabecera">
+      <img
+        class="logo"
+        src="logo-ujap.png"
+        alt="Logo de la Universidad José Antonio Páez"
+        width="41"
+        height="48"
+      />
+      <div class="titulos">
+        <p class="institucion">
+          Universidad José Antonio Páez · Especialización en Automatización Industrial
+        </p>
+        <h1 class="titulo">Emulador programable de brazo robótico inspirado en el LabVolt 5250</h1>
+      </div>
+      <p class="autor">Ing. Juan Sanoja</p>
+    </header>
+    <main id="escena">
+      <canvas id="render" touch-action="none"></canvas>
+      <nav id="pestanas" aria-label="Paneles">
+        <button type="button" data-tab="programa" aria-pressed="true">Programa</button>
+        <button type="button" data-tab="ejes" aria-pressed="false">Ejes</button>
+        <button type="button" data-tab="vista" aria-pressed="false">Vista</button>
+      </nav>
+      <aside id="programa" class="panel" aria-label="Programa"></aside>
+      <aside id="ejes" class="panel" aria-label="Control de ejes"></aside>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
